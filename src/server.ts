@@ -34,22 +34,32 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   // Root Endpoint
   // Displays a simple message to the user
   app.get( "/filteredimage", async ( req, res ) => {
-    const { image_url } = req.query; //get query from url parameter
+    
+    let image_url: string = req.query.image_url; //get query from url parameter // without typescript #const { image_url } = req.query;
+
+    if (!image_url) {
+      return res.status(400).send("Image url is missing. Please enter a valid URL");
+    }
+
     const image = await filterImageFromURL( image_url ); //wait for the image to be filtered
     res.sendFile( image ); //send the result
     
     //wait for the image to send then delete it from server
     if (res.statusCode !== 200)
-    res.send(res.statusCode).send(res.statusMessage);
+      res.send(res.statusCode).send(res.statusMessage);
     
     else
       res.status(200).sendFile(image, () => {deleteLocalFiles([image])});
   } );
   
+
+
   
   app.get( "/", async ( req, res ) => {
     res.send("try GET /filteredimage?image_url={{}}")
   } );
+
+
 
 
   // Start the Server
@@ -57,4 +67,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
       console.log( `server running http://localhost:${ port }` );
       console.log( `press CTRL+C to stop server` );
   } );
+
+
+  
 })();
