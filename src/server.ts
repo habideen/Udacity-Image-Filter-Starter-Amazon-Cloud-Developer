@@ -33,9 +33,9 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   
   // Root Endpoint
   // Displays a simple message to the user
-  app.get( "/filteredimage", async ( req, res ) => {
+  app.get( "/filteredimage", async ( req:express.Request, res:express.Response ) => {
     
-    let image_url: string = req.query.image_url; //get query from url parameter // without typescript #const { image_url } = req.query;
+    const { image_url } : { image_url: string } = req.query; //get query from url paramete
     
     if (!image_url) {
       return res.status(400).send("Image url is missing. Please enter a valid URL");
@@ -44,16 +44,16 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
     const image = await filterImageFromURL( image_url ); //wait for the image to be filtered
     res.sendFile( image ); //send the result
     
-    //wait for the image to send then delete it from server
+    //output error message if not status code 200
     if (res.statusCode !== 200)
       res.send(res.statusCode).send(res.statusMessage);
     
     else
-      res.status(200).sendFile(image, () => {deleteLocalFiles([image])});
+      res.status(200).sendFile(image, () => {deleteLocalFiles([image])}); //wait for the image to send then delete it from server
   } );
+
+
   
-
-
   
   app.get( "/", async ( req, res ) => {
     res.send("try GET /filteredimage?image_url={{}}")
