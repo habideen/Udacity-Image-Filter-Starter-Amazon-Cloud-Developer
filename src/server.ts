@@ -36,7 +36,7 @@ import {filterImageFromURL, deleteLocalFiles} from './util/util';
   app.get( "/filteredimage", async ( req, res ) => {
     
     let image_url: string = req.query.image_url; //get query from url parameter // without typescript #const { image_url } = req.query;
-
+    
     if (!image_url) {
       return res.status(400).send("Image url is missing. Please enter a valid URL");
     }
